@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import PokeBackground from './img/pokedex.png'
 import './App.css'
@@ -8,8 +8,7 @@ import './App.css'
 function App() {
 
   const [result, setResult] = useState({})
-  const [initialValue, setInitialValue] = useState(11);
-  const [resultSearch, setResultSearch] = useState('')
+  const [initialValue, setInitialValue] = useState(1);
   const pokemonImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${initialValue}.gif`
 
   const GetPokemons = async () => {
@@ -24,26 +23,35 @@ function App() {
   }
 
   const handleBtnPrev = () => {
-    setInitialValue(initialValue - 1)
-    return initialValue
+    if(initialValue >= 1){
+      setInitialValue(initialValue - 1)
+      return initialValue
+    } else {
+      return initialValue
+    }
   }
 
   const handleBtnNext = () => {
-    setInitialValue(initialValue + 1)
-    return initialValue
+    if(initialValue <= 151){
+      setInitialValue(initialValue + 1)
+      return initialValue
+    } else {
+      return initialValue
+    }
   }
 
-  const handleTextArea = (e) => {
-    setResultSearch(e.target.value) 
-    alert(resultSearch)
+  const handleText = (e) => {
+    e.preventDefault()
+    setInitialValue(e.target.value)
+    
 
   }
 
-  useLayoutEffect(()=>{
+ useEffect(()=>{
       
-    GetPokemons()
-
-  }, [initialValue, GetPokemons])
+  GetPokemons()
+  
+  }, [GetPokemons])
 
 
   
@@ -57,8 +65,10 @@ function App() {
           <span className='pokemon_name'> {result.name} </span>
         </h1>
 
-        <form className='form' onSubmit={handleTextArea}>
+        <form className='form' onSubmit={handleText}>
           <input 
+            onChange={handleText}
+            value={initialValue}
             type="search" 
             placeholder='Name or Number' 
             className='search'
